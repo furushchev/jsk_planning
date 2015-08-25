@@ -144,8 +144,9 @@
 ;;
 ;; solve planning
 ;;
+(setq *failed-nodes* (list 'move-to))
 (setq *graph*
-      (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes (list 'move-to) :debug t))
+      (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes *failed-nodes* :debug t))
 (pprint *result*)
 
 (when (and (ros::has-param "~display_graph")
