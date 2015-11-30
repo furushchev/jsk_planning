@@ -1,6 +1,6 @@
 <launch>
   <include file="$(find task_compiler)/launch/execute-pddl.launch">
-    <arg name="action" value="$(find task_compiler)/test/dummy-action.l"/>
+    <arg name="action" value="$(find pddl_planner)/test/dummy-action.l"/>
     <arg name="description" value="$(find pddl_planner)/demos/simple_failure_torelant/solve-simple-failure-torelant.l"/>
     <arg name="planner" value="downward" />
     <arg name="return_success" value="t" />
