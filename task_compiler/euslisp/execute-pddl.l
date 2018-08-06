@@ -24,6 +24,7 @@
 (load-param *self-return-failure* "~self_return_failre" nil t)
 (load-param *display-graph* "~display_graph" nil nil)
 (load-param *iterate* "~iterate" nil nil)
+(load-param *use-userdata* "~use_userdata" nil nil)
 
 (defun y-or-n-p (&optional format-string &rest args)
   (let (response)
@@ -46,6 +47,7 @@
                 :return-fail *return-fail*
                 :display-graph *display-graph*
                 :iterate *iterate*
+                :use-userdata *use-userdata*
                 :add-self-return-failure-path *self-return-failure*))
 
 (if *result* (ros::exit 0) (ros::exit 1))

@@ -16,6 +16,7 @@
 (defun run-pddl (&key action description goal-condition
                    return-success return-fail
                    display-graph iterate
+                   use-userdata
                    (add-self-return-failure-path t))
   (let (result problem graph act-names)
     ;; load action-functions, *domain*, *problem*
@@ -51,7 +52,7 @@
     (setq *sm* (convert-smach graph
                 :return-success return-success :return-fail return-fail
                 :add-self-return-failure-path add-self-return-failure-path
-                ;; :use-userdata t
+                :use-userdata use-userdata
                 ))
     (dump-loadable-structure "/tmp/action_state_machine.l" *sm*)
     (ros::ros-info "output state-machine *sm* to /tmp/action_state_machine.l")
