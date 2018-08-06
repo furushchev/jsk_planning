@@ -46,7 +46,7 @@
    (if (find-if #'(lambda (x) (and (eq (cdr x) to)
                                    (string-equal (car x) name)))
                 (send from :neighbor-action-alist))
-       (warn ";; same arc found ~A~%" name)
+       (warn ";; arc '~A' already exists~%" name)
      (send from :add-neighbor to name)))
   (:write-to-dot ;; redefine for adding arc name
    (fname &optional result-path (title "output"))
@@ -95,10 +95,12 @@
         (sort-condition l))
 
       (let (nd ns (plan (cdr (assoc :plan res))))
-        (when (assoc :durative res)
+        (when (cdr (assoc :durative res))
+          ;; divide durative action into start/end
+          ;; i,e,: pick -> pick-start / pick-end
           (let (tmp-plan)
             (dolist (pp plan)
-              (setq tmp-plan (append tmp-plan (list (format nil "~A" (append (list (read-from-string (format nil "~A-~A" (caaddr pp) (cadr pp)))) (cdaddr pp))))))
+              (setq tmp-plan (append tmp-plan (list (format nil "~A" (append (list (read-from-string (format nil "~A~A-~A" (car pp) (caaddr pp) (cadr pp)))) (cdaddr pp))))))
               (setq plan tmp-plan)
               )))
         (dolist (l (cdr (assoc :step-state res)))

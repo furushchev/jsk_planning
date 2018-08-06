@@ -26,7 +26,7 @@
 
     (warning-message 1 "waiting goal...~%")
     (send client :wait-for-result)
-
+    ;; (print-ros-msg (send client :get-result))
     (when (send (send client :get-result) :sequence)
       (cond
        ((send (send client :get-result) :use_durative_action) ;; use durative action
@@ -54,7 +54,7 @@
                                    (optimize-state nil))
   (let* ((result (pddl-planning domain problem :client client :debug debug))
          (state (instance pddl-state :init :domain domain :initial-state (send problem :initial-condition) :actions (cdr (assoc :plan result)) :objects (send problem :objects)))
-         (step-state (send state :generate-states)))
+         (step-state (send state :step-states)))
 
     (when optimize-state
       (let ((intersect-condition (reduce #'(lambda(x y) (intersection x y :test #'equal)) step-state)))
@@ -62,9 +62,8 @@
 
     (when (send domain :use-durative-action)
       ;; reset plan to the timeline-actions
-      (setq result (list (cons :plan  (send state :timeline-actions))))
-      (push (cons :durative t) result)
-      )
+      (setf (cdr (assoc :plan result)) (send state :step-actions))
+      (push (cons :durative t) result))
     (push (cons :step-state step-state) result)
     (push (cons :state state) result)
     result))

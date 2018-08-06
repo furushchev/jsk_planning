@@ -8,7 +8,7 @@
       '((robot1 . robot)
         (robot2 . robot)))
 
-(setq *domain* (instance pddl-domain :init :name 'example-domain :durative-action t))
+(setq *domain* (instance pddl-domain :init :name 'example-domain))
 (send *domain* :requirements '(:typing :durative-actions :adl))
 (send *domain* :types '(object robot position))
 (send *domain* :constants '(TABLECLOTH DISH CUP TABLE - object))
@@ -21,12 +21,12 @@
 
 (setq action-lst
       (list
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "pick"
                  ;; ?robot pick ?obj from ?underobj
-                 :parameters '((?robot - robot ?obj - object ?underobj - object))
-                 :duration '((= ?duration 10))
+                 :parameters '((?robot robot)
+                               (?obj ?underobj object))
+                 :duration 10
                  :precondition '(
                                  (at start (not (working ?robot)))
                                  (over all (at-robot ?robot TABLE))
@@ -40,12 +40,11 @@
                            (at end (not (on ?underobj ?obj)))
                            ))
 
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "movetoTABLE"
                  ;; ?robot move to TABLE
-                 :parameters '((?robot - robot))
-                 :duration '((= ?duration 1))
+                 :parameters '((?robot robot))
+                 :duration 1
                  :precondition '(
                                  (at start (not (working ?robot)))
                                  (at start (not (at-robot ?robot TABLE)))

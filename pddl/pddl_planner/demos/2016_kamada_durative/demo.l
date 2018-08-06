@@ -14,7 +14,7 @@
         (robot1 . robot)
         (robot2 . robot)))
 
-(setq *domain* (instance pddl-domain :init :name 'demo-domain :durative-action t))
+(setq *domain* (instance pddl-domain :init :name 'demo-domain))
 (send *domain* :requirements '(:typing :durative-actions :adl))
 (send *domain* :types '(object position robot))
 (send *domain* :constants '(GEORGIA EMPTY-BOX SUSHI-CUP MUG-CUP BOTTLE TABLECLOTH TABLE FRIDGE CART - object
@@ -36,12 +36,13 @@
 
 (setq action-lst
       (list
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "pick"
                  ;; ?robot pick ?obj from ?underobj at ?robotpos
-                 :parameters '((?robot - robot ?obj - object ?underobj - object ?robotpos - position))
-                 :duration '((= ?duration 3))
+                 :parameters '((?robot robot)
+                               (?obj ?underobj object)
+                               (?robotpos position))
+                 :duration 3
                  :precondition '((over all (at-robot ?robot ?robotpos))
                                  (over all (reachable-from ?robotpos ?underobj))
                                  (over all (placing-possible ?underobj))
@@ -55,12 +56,13 @@
                            (at end (not (on ?underobj ?obj)))
                            (at end (grasping ?robot ?obj))
                            ))
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "place"
                  ;; ?robot place ?obj on ?underobj at ?robotpos
-                 :parameters '((?robot - robot ?obj - object ?underobj - object ?robotpos - position))
-                 :duration '((= ?duration 3))
+                 :parameters '((?robot robot)
+                               (?obj ?underobj object)
+                               (?robotpos position))
+                 :duration 3
                  :precondition '((over all (at-robot ?robot ?robotpos))
                                  (over all (reachable-from ?robotpos ?underobj))
                                  (over all (placing-possible ?underobj))
@@ -73,22 +75,21 @@
                            (at end (reachable-from ?robotpos ?obj))
                            (at end (on ?underobj ?obj))
                            (at end (free-arm ?robot))))
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "move"
                  ;; ?robot move from ?from to ?to
-                 :parameters '((?robot - robot ?from - position ?to - position))
-                 :duration '((= ?duration 20))
+                 :parameters '((?robot robot)
+                               (?from ?to position))
+                 :duration 20
                  :precondition '((at start (at-robot ?robot ?from))
                                  )
                  :effect '((at start (not (at-robot ?robot ?from)))
                            (at end (at-robot ?robot ?to))))
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "set-tablecloth"
                  ;; ?robot set TABLECLOTH on TABLE at TABLE-FRONT
-                 :parameters '((?robot - robot))
-                 :duration '((= ?duration 18))
+                 :parameters '((?robot robot))
+                 :duration 18
                  :precondition '((at start (not (tableclothset)))
                                  (over all (at-robot ?robot TABLE-FRONT))
                                  (over all (reachable-from TABLE-FRONT TABLE))
@@ -106,12 +107,11 @@
                            (at end (on TABLE TABLECLOTH))
                            (at end (reachable-from TABLE-FRONT TABLECLOTH))
                            (at end (tableclothset))))
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "open-fridge"
                  ;; ?robot open FRIDGE at FRIDGE-FRONT
-                 :parameters '((?robot - robot))
-                 :duration '((= ?duration 20))
+                 :parameters '((?robot robot))
+                 :duration 20
                  :precondition '((over all (at-robot ?robot FRIDGE-FRONT))
                                  (over all (reachable-from FRIDGE-FRONT FRIDGE))
                                  (at start (free-arm ?robot))
@@ -120,12 +120,11 @@
                  :effect '((at start (not (free-arm ?robot)))
                            (at end (free-arm ?robot))
                            (at end (not (closed FRIDGE)))))
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "grasp-can"
                  ;; ?robot grasp GEORGIA from FRIDGE at FRIDGE-FRONT
-                 :parameters '((?robot - robot))
-                 :duration '((= ?duration 20))
+                 :parameters '((?robot robot))
+                 :duration 20
                  :precondition '((over all (at-robot ?robot FRIDGE-FRONT))
                                  (over all (reachable-from FRIDGE-FRONT FRIDGE))
                                  (over all (reachable-from FRIDGE-FRONT GEORGIA))
@@ -141,12 +140,11 @@
                            (at end (cangrasped))
                            (at end (not (reachable-from FRIDGE-FRONT GEORGIA)))
                            (at end (grasping ?robot GEORGIA))))
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "close-fridge"
                  ;; ?robot close FRIDGE at FRIDGE-FRONT
-                 :parameters '((?robot - robot))
-                 :duration '((= ?duration 20))
+                 :parameters '((?robot robot))
+                 :duration 20
                  :precondition '((over all (at-robot ?robot FRIDGE-FRONT))
                                  (over all (reachable-from FRIDGE-FRONT FRIDGE))
                                  (at start (cangrasped))
@@ -155,12 +153,11 @@
                  :effect '((at start (slightly-closed FRIDGE))
                            (at end (not (slightly-closed FRIDGE)))
                            (at end (closed FRIDGE))))
-       (instance pddl-action :init
-                 :use-durative-action t
+       (instance pddl-durative-action :init
                  :name "remove-cart"
                  ;; ?robot remove CART at CART-FRONT
-                 :parameters '((?robot - robot))
-                 :duration '((= ?duration 20))
+                 :parameters '((?robot robot))
+                 :duration 20
                  :precondition '((over all (at-robot ?robot CART-FRONT))
                                  (over all (reachable-from CART-FRONT CART))
                                  (at start (blocking CART))
