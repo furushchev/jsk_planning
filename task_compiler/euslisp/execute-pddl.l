@@ -21,7 +21,7 @@
 (load-param *pddl-debug* "~debug" nil nil)
 (load-param *return-success* "~return_success" nil :success t)
 (load-param *return-fail* "~return_fail" nil :fail t)
-(load-param *self-return-failure* "~self_return_failre" nil t)
+(load-param *self-return-failure* "~self_return_failure" nil t)
 (load-param *display-graph* "~display_graph" nil nil)
 (load-param *iterate* "~iterate" nil nil)
 (load-param *use-userdata* "~use_userdata" nil nil)
