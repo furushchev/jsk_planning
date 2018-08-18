@@ -449,7 +449,7 @@
   (:states (&rest args)
     (forward-message-to states args))
   (:step-actions ()
-   "((1.0
+   "((0.0
       ((end (movetotable robot1)) (start (pick robot1 dish tablecloth))))
      (11.0
       ((end (pick robot1 dish tablecloth))
@@ -470,7 +470,8 @@
              (cond ((null ac-lst) (setq ac-lst (list (cdr ac)) tm (car ac)))
                    ((eq tm (car ac)) (push (cdr ac) ac-lst))
                    (t (push (list tm ac-lst) steps)
-                      (setq ac-lst (list (cdr ac)) tm (car ac))))))
+                      (setq ac-lst (list (cdr ac)) tm (car ac)))))
+           (when ac-lst (push (list tm ac-lst) steps)))
          steps)
        (send self :actions)))
   (:find-action (act)
@@ -493,7 +494,7 @@
      (setq states st)
      states))
   (:apply-action (st act)
-    (let ((acts (send self :find-action act))
+    (let ((action (send self :find-action act))
           (mid-state (copy-object st))
           params)
       (unless action
