@@ -226,7 +226,13 @@
     (if par (setq parameters   (append parameters   (list par))))
     (if pre (setq precondition (append precondition (list par))))
     self)
+  (:validate ()
+    (assert (not (or (null name)
+                     (null-string-p name)))
+            "pddl-action name is empty")
+    t)
   (:action-sexp ()
+    (send self :validate)
     `(:action ,name
        :parameters ,(flatten (mapcar #'(lambda (x)
                                          (if (= (length x) 1)
@@ -237,6 +243,7 @@
        :effect (and ,@effect)
        ))
   (:ros-message ()
+    (send self :validate)
     (instance pddl_msgs::PDDLAction :init
               :name (string name)
               :parameters
@@ -256,7 +263,7 @@
   ) ;; pddl-action
 
 (defclass pddl-durative-action
-    :super pddl-action
+  :super pddl-action
   :slots (duration))
 (defmethod pddl-durative-action
   (:init (&rest args
@@ -272,7 +279,13 @@
   (:add (&rest args ((:duration dur) nil) &allow-other-keys)
    (send self :duration dur)
    (send-super* :add args))
+  (:validate ()
+    (send-super :validate)
+    (assert duration
+            (format nil "pddl-durative-action '~A' empty duration" name))
+    t)
   (:action-exp ()
+    (send self :validate)
    `(:durative-action ,name
      :parameters ,(flatten (mapcar #'(lambda (x)
                                        (if (= (length x) 1)
@@ -283,6 +296,7 @@
      :condition (and ,@precondition)
      :effect (and ,@effect)))
   (:ros-message ()
+    (send self :validate)
     (instance pddl_msgs::PDDLAction :init
               :name (string name)
               :parameters
