@@ -145,6 +145,9 @@ class PDDLPlannerActionServer(object):
             output, error = proc.communicate()
             if proc.poll() != 0:
                 # process exited abnormally
+                error += "\nExit code: " + proc.poll()
+                error += "\nTo reproduce the error, run: "
+                error += " ".join(command)
                 raise RuntimeError(error)
             return output
         finally:
